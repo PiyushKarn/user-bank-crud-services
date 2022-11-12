@@ -1,0 +1,14 @@
+[
+  {
+    "name": "bulkTest1",
+    "phoneNumber": 1212312341,
+    "address": "HSR",
+    "additionalDetails": "bulktest1"
+  },
+  {
+    "name": "bulkTest1",
+    "phoneNumber": 1121231234,
+    "address": "HSR",
+    "additionalDetails": "bulktest2"
+  }
+]
