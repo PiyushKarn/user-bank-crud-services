@@ -15,5 +15,6 @@ public interface BankRepository extends JpaRepository<BankDomain, Long> {
     //    @Query("delete from accounts where user_id:=user_id")
     void deleteByUserId( Long user_id);
 
+    List<BankDomain> findByUserIdAndAccountNumber(Long userId,String accountNumber);
 }
 

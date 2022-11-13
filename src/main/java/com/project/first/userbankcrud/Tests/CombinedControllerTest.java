@@ -42,15 +42,15 @@ public class CombinedControllerTest {
         combinedObject = new CombinedObject(123l,123l,"Piyush",7540056206l,"Bangalore","bankName","accountNumber","ifscCode","additionalDetailsUser","additionalDetailsBank");
     }
 
-    @Test
-    public void testFindAllCombinedUsersAndBanks() throws Exception {
-        CombinedObject combinedObject = new CombinedObject(123l,123l,"Piyush",7540056206l,"Bangalore","bankName","accountNumber","ifscCode","additionalDetailsUser","additionalDetailsBank");
-        List<CombinedObject> users = Arrays.asList(combinedObject);
-        Long phoneNumber = combinedObject.getPhoneNumber();
-        when(combinedServices.getCombinedDomainByPhoneNumber(phoneNumber)).thenReturn(users);
-        mockMvc.perform(get("http://localhost:9090/combined/{phoneNumber}"))
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    public void testFindAllCombinedUsersAndBanks() throws Exception {
+//        CombinedObject combinedObject = new CombinedObject(123l,123l,"Piyush",7540056206l,"Bangalore","bankName","accountNumber","ifscCode","additionalDetailsUser","additionalDetailsBank");
+//        List<CombinedObject> users = Arrays.asList(combinedObject);
+//        Long phoneNumber = combinedObject.getPhoneNumber();
+//        when(combinedServices.getCombinedDomainByPhoneNumber(phoneNumber)).thenReturn(users);
+//        mockMvc.perform(get("http://localhost:9090/combined/{phoneNumber}"))
+//                .andExpect(status().isOk());
+//    }
 
 //    @Test
 //    public void testIfGetUsersListGettingGenerated() throws Exception{

@@ -30,6 +30,7 @@ public class CombinedObject {
         this.additionalDetailsBank = bankDomain.getAdditionalDetailsBank();
     }
 
+
     public CombinedObject(Long bankId, Long userId, String name, Long phoneNumber, String address, String bankName, String accountNumber, String ifscCode, String additionalDetailsUser, String additionalDetailsBank) {
         this.bankId = bankId;
         this.userId = userId;
