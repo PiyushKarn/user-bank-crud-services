@@ -28,7 +28,7 @@ public class BankDomain {
 //    private UserDomain user;
     public BankDomain()
     {}
-    public BankDomain(Long id, Long userId, String bankName,String accountNumber, String ifscCode, String additionalDetails)
+    public BankDomain(Long id, Long userId, String bankName,String accountNumber, String ifscCode, String additionalDetailsBank)
     {
         this.id = id;
         this.userId =userId;
@@ -83,6 +83,15 @@ public class BankDomain {
     }
 
     public void setAdditionalDetailsBank(String additionalDetailsBank) {
+        this.additionalDetailsBank = additionalDetailsBank;
+    }
+
+    public BankDomain(long userId, String bankName, String accountNumber, String ifscCode, String additionalDetailsBank) {
+        this.id = 0l;
+        this.userId = userId;
+        this.bankName = bankName;
+        this.accountNumber = accountNumber;
+        this.ifscCode = ifscCode;
         this.additionalDetailsBank = additionalDetailsBank;
     }
 }

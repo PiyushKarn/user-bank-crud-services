@@ -135,22 +135,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-//    @Override
-//    public String saveUserBulkJson(List<UserDomain> userDomain) {
-//       // userRepository.save(userDomain);
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//			TypeReference<UserDomain> typeReference = new TypeReference<>() {
-//            };
-//			InputStream inputStream = TypeReference.class.getResourceAsStream(String.valueOf(userDomain));
-//			try {
-//				List<UserDomain> users = (List<UserDomain>) mapper.readValue(inputStream,typeReference);
-//				userRepository.save(userDomain);
-//				System.out.println("Users Saved!");
-//			} catch (IOException e){
-//				System.out.println("Unable to save users: " + e.getMessage());
-//			}
-//            return "Error!";
-//		}
+    @Override
+    public String saveUserBulkJson(List<UserDomain> userDomain) {
+        try{
+        userRepository.saveAll(userDomain);
+            return "Users Added!";
+		} catch (Exception e){
+            return "Error!";
+        }
+        }
 
 }

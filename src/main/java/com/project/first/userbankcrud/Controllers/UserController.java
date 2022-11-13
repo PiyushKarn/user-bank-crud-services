@@ -110,9 +110,9 @@ public class UserController {
         return userServices.saveUserBulkCsv();
     }
 
-//    @PostMapping("/bulk/json")
-//    public String bulkUploadJson(@RequestBody List<UserDomain> userDomain){
-//        return userServices.saveUserBulkJson(userDomain);
-//    }
+    @PostMapping("/bulk/json")
+    public String bulkUploadJson(@RequestBody List<UserDomain> userDomain){
+        return userServices.saveUserBulkJson(userDomain);
+    }
 
 }

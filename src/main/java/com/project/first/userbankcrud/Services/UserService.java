@@ -18,7 +18,7 @@ public interface UserService {
     Iterable<UserDomain> list();
     void save(List<UserDomain> users);
 
-//    String saveUserBulkJson(UserDomain userDomain);
+  String saveUserBulkJson(List<UserDomain> userDomain);
 
     String saveUserBulkCsv();
 }

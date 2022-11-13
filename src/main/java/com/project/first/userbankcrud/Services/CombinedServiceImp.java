@@ -24,7 +24,7 @@ public class CombinedServiceImp implements CombinedService{
 
         try {
             UserDomain userDomain = new UserDomain(
-                    -1L,
+
                     combinedObject.getName(),
                     combinedObject.getPhoneNumber(),
                     combinedObject.getAddress(),
@@ -33,7 +33,6 @@ public class CombinedServiceImp implements CombinedService{
             userDomain = userRepository.save(userDomain);
 
             BankDomain bankDomain = new BankDomain(
-                    -1L,
                     userDomain.getId(),
                     combinedObject.getBankName(),
                     combinedObject.getAccountNumber(),
@@ -100,7 +99,15 @@ public class CombinedServiceImp implements CombinedService{
                 if(combinedObject.getAdditionalDetailsBank()!=null) bankDomain.setAdditionalDetailsBank(combinedObject.getAdditionalDetailsBank());
                 if(combinedObject.getIfscCode()!=null) bankDomain.setIfscCode(combinedObject.getIfscCode());
                 bankRepository.save(bankDomain);
+            } else if (isBankRequirementsAvailable(combinedObject)) {
+                BankDomain bankDomain = new BankDomain(0l,combinedObject.getUserId(),combinedObject.getBankName(),combinedObject.getAccountNumber()
+                ,combinedObject.getIfscCode(),combinedObject.getAdditionalDetailsBank());
+                bankRepository.save(bankDomain);
+
+                
             }
+
+
 
         } catch (Exception e) {
             return e.getMessage();
@@ -108,4 +115,49 @@ public class CombinedServiceImp implements CombinedService{
         return "User updated!";
     }
 
+    boolean isBankRequirementsAvailable(CombinedObject combinedObject)
+    {
+        if(combinedObject.getBankName()==null) return false;
+        if(combinedObject.getAccountNumber()==null) return false;
+
+        return true;
+    }
 }
+
+
+/*
+* cretate User
+* requirements: phoneNumber -> phone number should not be null,
+*               name -> User name should not be null,
+* already exists: phone number -> duplicate entry for phoneNumber
+*
+* create Bank
+* requirements: accountNumber -> accNo should not be null,
+*               bankName -> Bank name should not be null
+*               userId -> user Id should not be null
+*
+* already exists: userid -> user does not exist (foreign key violation)
+*                  accountNumber, userid -> duplicate entry for (accNo, userId)
+*
+*
+* Update User by userId
+* requirements: userId -> userId should not be null
+*
+* already exists: userId -> user with given id does not exist,
+*
+* update bank by bankId
+* requirements: userId -> userId should not be null
+*               bankId -> bankId should not be null
+ *
+ * already exists: userId -> user with given id does not exist,
+ *                  (bankId -> check requirements to create new bank account)
+ * check create Bank()
+*
+* retrive user by phone number
+* requirement : phone number ->
+* */
+
+/*
+* negative unit test for failure route
+* passed
+* */

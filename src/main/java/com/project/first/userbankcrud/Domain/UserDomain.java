@@ -35,6 +35,14 @@ public class UserDomain {
         this.additionalDetailsUser = additionalDetailsUser;
     }
 
+    public UserDomain(String name, Long phoneNumber, String address, String additionalDetailsUser) {
+        this.id = 0l;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.additionalDetailsUser = additionalDetailsUser;
+    }
+
     public Long getId(){
         return id;
     }
