@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.first.userbankcrud.Domain.UserDomain;
 import com.project.first.userbankcrud.Repositories.UserRepository;
+import com.project.first.userbankcrud.Response.ResponseMessage;
 import com.project.first.userbankcrud.Services.CSVHelper;
 import com.project.first.userbankcrud.Services.CSVService;
 import com.project.first.userbankcrud.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -109,7 +111,7 @@ public class UserController {
     CSVService fileService;
 
     @PostMapping("/bulk/csv")
-    public String uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
         String message = "";
 
         if (CSVHelper.hasCSVFormat(file)) {
@@ -123,15 +125,15 @@ public class UserController {
                         .path(file.getOriginalFilename())
                         .toUriString();
 
-                return "File Uploaded Successfully";
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message,fileDownloadUri));
             } catch (Exception e) {
                 message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-                return "could not upload file";
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message,""));
             }
         }
 
         message = "Please upload a csv file!";
-        return "Please upload a csv file";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message,""));
     }
 
 }

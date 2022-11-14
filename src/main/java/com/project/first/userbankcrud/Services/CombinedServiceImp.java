@@ -33,13 +33,14 @@ public class CombinedServiceImp implements CombinedService{
         combinedObject.setUserId(userDomain.getId());
 
         response = createBank(combinedObject);
+        //incase of failure the newly created user will be deleted
         if(response instanceof Failure)
         {
             userRepository.deleteById(userDomain.getId());
             return response;
         }
 
-        return (Response) new Success("User and Bank Accounts created Successfully",combinedObject);
+        return (Response) new Success("User and Bank Account created Successfully",combinedObject);
     }
 
     private Response createUser(CombinedObject userDomain)
