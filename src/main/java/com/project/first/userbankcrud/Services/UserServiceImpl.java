@@ -1,6 +1,7 @@
 package com.project.first.userbankcrud.Services;
 
 import com.project.first.userbankcrud.Domain.UserDomain;
+import com.project.first.userbankcrud.Exception.UserNotFoundException;
 import com.project.first.userbankcrud.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -104,6 +105,16 @@ public class UserServiceImpl implements UserService {
     String line = "";
 
     @Override
+    public String saveUserBulkJson(List<UserDomain> userDomain) {
+        try{
+            userRepository.saveAll(userDomain);
+            return "Users Added!";
+        } catch (Exception e){
+            return e.getMessage();
+        }
+    }
+
+    @Override
     public String saveUserBulkCsv(){
         try{
             BufferedReader br = new BufferedReader(new FileReader("src/main/resources/csv/users.csv"));
@@ -123,14 +134,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public String saveUserBulkJson(List<UserDomain> userDomain) {
-        try{
-        userRepository.saveAll(userDomain);
-            return "Users Added!";
-		} catch (Exception e){
-            return e.getMessage();
-        }
-        }
+
 
 }

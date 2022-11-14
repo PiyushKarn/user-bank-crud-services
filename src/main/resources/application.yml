@@ -2,6 +2,8 @@ spring:
   datasource:
     username: root
     url: jdbc:mysql://localhost:3306/userDB
+   # url: jdbc:mysql://${DATABASE_HOST}/userDB
+
     password: Piyush@123
   jpa:
     properties:

@@ -4,9 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.first.userbankcrud.Domain.UserDomain;
 import com.project.first.userbankcrud.Repositories.UserRepository;
+import com.project.first.userbankcrud.Response.Response;
 import com.project.first.userbankcrud.Response.ResponseMessage;
-import com.project.first.userbankcrud.Services.CSVHelper;
-import com.project.first.userbankcrud.Services.CSVService;
 import com.project.first.userbankcrud.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,10 +16,14 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 @RestController
 @RequestMapping("/users")
@@ -29,8 +32,7 @@ public class UserController {
     @Autowired
     private UserService userServices;
 
-    @Autowired
-    private UserRepository userRepository;
+
 
     @GetMapping("/userList")
     public Iterable<UserDomain> list() {
@@ -97,43 +99,54 @@ public class UserController {
         return results;
     }
 
-//    @PostMapping("/bulk/csv")
-//    public String bulkUpload(){
-//        return userServices.saveUserBulkCsv();
-//    }
 
     @PostMapping("/bulk/json")
-    public String bulkUploadJson(@RequestBody List<UserDomain> userDomain){
-        return userServices.saveUserBulkJson(userDomain);
+    public String bulkUploadJson(@RequestBody List<UserDomain> userDomains) {
+        String successString ="";
+        try {
+            return userServices.saveUserBulkJson(userDomains);
+        } catch (Exception e){
+            successString = "Failure";
+
+        }
+        return successString;
     }
 
-    @Autowired
-    CSVService fileService;
 
     @PostMapping("/bulk/csv")
-    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
-        String message = "";
+    public String uploadFile(@RequestParam("file") MultipartFile file){
+        String successString = "";
+        try {
+            Scanner scanner = new Scanner(new InputStreamReader(file.getInputStream(),"UTF-8"));
 
-        if (CSVHelper.hasCSVFormat(file)) {
-            try {
-                fileService.save(file);
+            while (scanner.hasNextLine())
+            {
+                String line = scanner.nextLine();
+                try {
 
-                message = "Uploaded the file successfully: " + file.getOriginalFilename();
-
-                String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/bulk/csv")
-                        .path(file.getOriginalFilename())
-                        .toUriString();
-
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message,fileDownloadUri));
-            } catch (Exception e) {
-                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message,""));
+                    String[] strs = line.split(",");
+                    UserDomain userDomain = new UserDomain(
+                            strs[0],
+                            Long.parseLong(strs[1]),
+                            strs[2],
+                            strs[3]
+                    );
+                    ResponseEntity<String> response= userServices.saveUser(userDomain);
+                    successString += (line+" -- "+ response.toString() +"\n");
+                }catch (Exception e)
+                {
+                    successString += (line+" -- "+"Invalid\n");
+                }
             }
-        }
+            scanner.close();
 
-        message = "Please upload a csv file!";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message,""));
+        } catch (Exception e) {
+            //throw new RuntimeException(e);
+            successString = "Failure";
+        }
+        return successString;
     }
+
+
 
 }

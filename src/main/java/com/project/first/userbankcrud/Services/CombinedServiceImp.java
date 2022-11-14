@@ -33,7 +33,7 @@ public class CombinedServiceImp implements CombinedService{
         combinedObject.setUserId(userDomain.getId());
 
         response = createBank(combinedObject);
-        //incase of failure the newly created user will be deleted
+        //Rollback : in case of failure while creating bank after user is created, the newly created user will be deleted
         if(response instanceof Failure)
         {
             userRepository.deleteById(userDomain.getId());
