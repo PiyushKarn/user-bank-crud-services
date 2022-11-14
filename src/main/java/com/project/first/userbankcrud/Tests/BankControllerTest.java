@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.first.userbankcrud.Domain.BankDomain;
+import com.project.first.userbankcrud.Domain.UserDomain;
 import com.project.first.userbankcrud.Services.BankService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -121,15 +122,30 @@ public class BankControllerTest {
     }
 
     @Test
-    public void testIfAccountNumberNotPassed() throws Exception{
+    public void testIfBodyNotPassed() throws Exception{
+        BankDomain bankDomain1 = new BankDomain();
+        when(bankServices.saveAccount(bankDomain1)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        Assertions.assertEquals(null, bankDomain1.getBankName());
+        Assertions.assertEquals(null, bankDomain1.getAccountNumber());
+        Assertions.assertEquals(null, bankDomain1.getIfscCode());
+        Assertions.assertEquals(null, bankDomain1.getAdditionalDetailsBank());
 
     }
     @Test
-    public void testIfUserIdNotPassed() throws Exception{
-
+    public void testIfAccountNumberNotPassed() throws Exception{
+        BankDomain bankDomain1 = new BankDomain(101l,101l,"HDFC",null,"ifscTest","Additional Details Test");
+        when(bankServices.saveAccount(bankDomain1)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        Assertions.assertNotNull(bankDomain1);
+        Assertions.assertEquals(null, bankDomain1.getAccountNumber());
     }
+
+
     @Test
     public void testIfBankNameNotPassed() throws Exception{
+        BankDomain bankDomain1 = new BankDomain(101l,101l,null,"101","ifscTest","Additional Details Test");
+        when(bankServices.saveAccount(bankDomain1)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        Assertions.assertNotNull(bankDomain1);
+        Assertions.assertEquals(null, bankDomain1.getBankName());
 
     }
 
