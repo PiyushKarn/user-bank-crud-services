@@ -4,12 +4,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.first.userbankcrud.Domain.UserDomain;
 import com.project.first.userbankcrud.Repositories.UserRepository;
+import com.project.first.userbankcrud.Services.CSVHelper;
+import com.project.first.userbankcrud.Services.CSVService;
 import com.project.first.userbankcrud.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,20 +80,6 @@ public class UserController {
         return userServices.deleteUser(deleteUserData);
     }
 
-//@DeleteMapping()       //deleteUserById
-//public String deleteUser(@RequestBody UserDomain deleteUserData){
-//    return userServices.deleteUser(deleteUserData);
-//}
-
-//    @DeleteMapping(path = "/{id}")
-//    public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
-//        boolean deleteUserById = userServices.deleteUserById(id);
-//        if (deleteUserById) {
-//            return new ResponseEntity<>(("User deleted - Order ID:" + id), HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(("User deletion failed - Order ID:" + id), HttpStatus.BAD_REQUEST);
-//        }
-//    }
 
     @GetMapping("/pagination")    //findUserByPagination
     public List<UserDomain> getUserById(@RequestParam int offset, @RequestParam int limit) {
@@ -105,14 +95,43 @@ public class UserController {
         return results;
     }
 
-    @PostMapping("/bulk/csv")
-    public String bulkUpload(){
-        return userServices.saveUserBulkCsv();
-    }
+//    @PostMapping("/bulk/csv")
+//    public String bulkUpload(){
+//        return userServices.saveUserBulkCsv();
+//    }
 
     @PostMapping("/bulk/json")
     public String bulkUploadJson(@RequestBody List<UserDomain> userDomain){
         return userServices.saveUserBulkJson(userDomain);
+    }
+
+    @Autowired
+    CSVService fileService;
+
+    @PostMapping("/bulk/csv")
+    public String uploadFile(@RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        if (CSVHelper.hasCSVFormat(file)) {
+            try {
+                fileService.save(file);
+
+                message = "Uploaded the file successfully: " + file.getOriginalFilename();
+
+                String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/bulk/csv")
+                        .path(file.getOriginalFilename())
+                        .toUriString();
+
+                return "File Uploaded Successfully";
+            } catch (Exception e) {
+                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                return "could not upload file";
+            }
+        }
+
+        message = "Please upload a csv file!";
+        return "Please upload a csv file";
     }
 
 }

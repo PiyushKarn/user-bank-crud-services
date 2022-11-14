@@ -30,6 +30,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -126,6 +127,31 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void testIfPassedIdIsNegative() throws Exception{
+        UserDomain userDomain1 = new UserDomain(-123l,"Piyush",7540056206l,"Bangalore","Add details");
+        when(userServices.saveUser(userDomain1)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        Assertions.assertNotNull(userDomain1);
+        Assertions.assertEquals(-123, userDomain1.getId());
+
+    }
+
+    @Test
+    public void testIfBodyNotPassed() throws Exception{
+        UserDomain userDomain1 = new UserDomain();
+        when(userServices.saveUser(userDomain1)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        Assertions.assertNotNull(userDomain1);
+        Assertions.assertEquals(null, userDomain1.getId());
+    }
+
+    @Test
+    public void testIfPhoneNumberNotPassed() throws Exception{
+        UserDomain userDomain1 = new UserDomain("Piyush",null,"Bangalore","Add details");
+        when(userServices.saveUser(userDomain1)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        Assertions.assertNotNull(userDomain1);
+        Assertions.assertEquals(null, userDomain1.getPhoneNumber());
     }
 
 }

@@ -25,7 +25,6 @@ public class CombinedServiceImp implements CombinedService{
     @Override
     public Response save(CombinedObject combinedObject) {
 
-
         Response response = createUser(combinedObject);
         if(response instanceof Failure)
             return response;
@@ -43,13 +42,11 @@ public class CombinedServiceImp implements CombinedService{
         return (Response) new Success("User and Bank Accounts created Successfully",combinedObject);
     }
 
-
-
     private Response createUser(CombinedObject userDomain)
     {
         //check requirements for User
-        if(userDomain.getName()==null) return (Response) new Failure("User Name should not be null.");
-        if(userDomain.getPhoneNumber()==null) return (Response) new Failure("Phone number should not be null.");
+        if(userDomain.getName()==null) return (Response) new Failure("User Name should not be null");
+        if(userDomain.getPhoneNumber()==null) return (Response) new Failure("Phone number should not be null");
 
         //Edge Cases
         if(userDomain.getName().isEmpty()) return (Response) new Failure("User Name should not be empty");
@@ -59,7 +56,7 @@ public class CombinedServiceImp implements CombinedService{
 
         //check if already exists
         if(userRepository.findByPhoneNumber(userDomain.getPhoneNumber()).size()>0)
-            return (Response) new Failure("User by this phone number already exists.");
+            return (Response) new Failure("User with this phone number already exists.");
 
         try{
             UserDomain userDomainTemp = new UserDomain(
@@ -95,7 +92,7 @@ public class CombinedServiceImp implements CombinedService{
             return (Response) new Failure("Duplicate entry for UserId and AccountNumber");
 
         try{
-            BankDomain bankDomaintemp = new BankDomain(
+            BankDomain bankDomainTemp = new BankDomain(
                     bankDomain.getUserId(),
                     bankDomain.getBankName(),
                     bankDomain.getAccountNumber(),
@@ -105,17 +102,13 @@ public class CombinedServiceImp implements CombinedService{
 
             return (Response) new Success(
                     "Bank added Successfully.",
-                    bankRepository.save(bankDomaintemp)
+                    bankRepository.save(bankDomainTemp)
             );
-
-            ///Wait flight book gardai xu. 5 minutes ma start garxu
-            // ok
 
         }catch (Exception e){
             return (Response) new Failure(e.getMessage());
         }
     }
-
 
     @Override
     public Response getCombinedDomainByPhoneNumber(Long phoneNumber) {
@@ -163,24 +156,35 @@ public class CombinedServiceImp implements CombinedService{
 
             if(combinedObject.getBankId()!=null){
                 BankDomain bankDomain = bankRepository.findById(combinedObject.getBankId()).orElse(null);
-                if(combinedObject.getAccountNumber()!=null) bankDomain.setAccountNumber(combinedObject.getAccountNumber());
-                if(combinedObject.getBankName()!=null) bankDomain.setBankName(combinedObject.getBankName());
-                if(combinedObject.getAdditionalDetailsBank()!=null) bankDomain.setAdditionalDetailsBank(combinedObject.getAdditionalDetailsBank());
+                if(combinedObject.getAccountNumber()!=null) {
+                    if (combinedObject.getIfscCode().length() <= 17)
+                        bankDomain.setAccountNumber(combinedObject.getAccountNumber());
+                    else return "Account number should not exceed 11 characters";
+                }
+
+                if(combinedObject.getBankName()!=null) {
+                    if (combinedObject.getIfscCode().length() <= 30)
+                        bankDomain.setBankName(combinedObject.getBankName());
+                    else return "Bank name should not exceed 30 characters";
+                }
+
+
+                if(combinedObject.getAdditionalDetailsBank()!=null)
+                    bankDomain.setAdditionalDetailsBank(combinedObject.getAdditionalDetailsBank());
+
                 if(combinedObject.getIfscCode()!=null) {
                     if (combinedObject.getIfscCode().length() <= 11)
                         bankDomain.setIfscCode(combinedObject.getIfscCode());
                     else return "Ifsc code should not exceed 11 characters";
                 }
+
                 bankRepository.save(bankDomain);
-            } else if (isBankRequirementsAvailable(combinedObject)) {
+            }
+            else if (isBankRequirementsAvailable(combinedObject)) {
                 BankDomain bankDomain = new BankDomain(0l,combinedObject.getUserId(),combinedObject.getBankName(),combinedObject.getAccountNumber()
                 ,combinedObject.getIfscCode(),combinedObject.getAdditionalDetailsBank());
                 bankRepository.save(bankDomain);
-
-                
             }
-
-
 
         } catch (Exception e) {
             return e.getMessage();
@@ -198,10 +202,10 @@ public class CombinedServiceImp implements CombinedService{
 }
 
 
-/*
+/* VALIDATIONS
 * create User
 * requirements: phoneNumber -> phone number should not be null,
-*               name -> User name should not be null,
+*               name -> Username should not be null,
 * already exists: phone number -> duplicate entry for phoneNumber
 *
 * create Bank
@@ -221,16 +225,12 @@ public class CombinedServiceImp implements CombinedService{
 * update bank by bankId
 * requirements: userId -> userId should not be null
 *               bankId -> bankId should not be null
- *
- * already exists: userId -> user with given id does not exist,
- *                  (bankId -> check requirements to create new bank account)
- * check create Bank()
 *
-* retrive user by phone number
+* already exists: userId -> user with given id does not exist,
+*                  (bankId -> check requirements to create new bank account)
+* check create Bank()
+*
+* retrieve user by phone number
 * requirement : phone number ->
 * */
 
-/*
-* negative unit test for failure route
-* passed
-* */

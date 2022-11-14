@@ -20,6 +20,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+
     @Override
     public List<UserDomain> findAll() {
         List<UserDomain> allUsers = userRepository.findAll();
@@ -58,19 +59,6 @@ public class UserServiceImpl implements UserService {
     public Optional<UserDomain> findById(Long id) {
         return userRepository.findById(id);
     }
-//    @Override
-//    public String findById(Long id) {
-//        try {
-//            if (id > 0) {
-//                return String.valueOf(userRepository.findById(id));
-//            } else {
-//                return "Id should be positive";
-//            }
-//        }
-//        catch(Exception e) {
-//            return "User with given Id does not exist";
-//        }
-//    }
 
     @Override
     public ResponseEntity<String> deleteUser(UserDomain deleteUserData) {
@@ -141,7 +129,7 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAll(userDomain);
             return "Users Added!";
 		} catch (Exception e){
-            return "Error!";
+            return e.getMessage();
         }
         }
 

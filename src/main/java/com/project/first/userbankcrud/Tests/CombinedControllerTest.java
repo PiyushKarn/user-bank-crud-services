@@ -3,6 +3,7 @@ package com.project.first.userbankcrud.Tests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.first.userbankcrud.Domain.CombinedObject;
+import com.project.first.userbankcrud.Response.Response;
 import com.project.first.userbankcrud.Services.CombinedService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,10 +48,10 @@ public class CombinedControllerTest {
 //        CombinedObject combinedObject = new CombinedObject(123l,123l,"Piyush",7540056206l,"Bangalore","bankName","accountNumber","ifscCode","additionalDetailsUser","additionalDetailsBank");
 //        List<CombinedObject> users = Arrays.asList(combinedObject);
 //        Long phoneNumber = combinedObject.getPhoneNumber();
-//        when(combinedServices.getCombinedDomainByPhoneNumber(phoneNumber)).thenReturn(users);
-//        mockMvc.perform(get("http://localhost:9090/combined/{phoneNumber}"))
-//                .andExpect(status().isOk());
-//    }
+//        when(combinedServices.getCombinedDomainByPhoneNumber(phoneNumber)).thenReturn((Response) users);
+//        Assertions.assertNotNull(users);
+//        Assertions.assertEquals(null, ((Response) users).getMessage());
+    }
 
 //    @Test
 //    public void testIfGetUsersListGettingGenerated() throws Exception{
@@ -109,5 +110,5 @@ public class CombinedControllerTest {
 //                .andDo(print())
 //                .andExpect(status().is4xxClientError());
 //    }
-
-}
+//
+//}

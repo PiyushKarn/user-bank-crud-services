@@ -119,4 +119,18 @@ public class BankControllerTest {
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
     }
+
+    @Test
+    public void testIfAccountNumberNotPassed() throws Exception{
+
+    }
+    @Test
+    public void testIfUserIdNotPassed() throws Exception{
+
+    }
+    @Test
+    public void testIfBankNameNotPassed() throws Exception{
+
+    }
+
 }
