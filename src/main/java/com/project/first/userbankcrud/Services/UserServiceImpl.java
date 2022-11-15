@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
     public String saveUserBulkJson(List<UserDomain> userDomain) {
         try{
             userRepository.saveAll(userDomain);
-            return "Users Added!";
+            return "User Added Successfully";
         } catch (Exception e){
             return e.getMessage();
         }

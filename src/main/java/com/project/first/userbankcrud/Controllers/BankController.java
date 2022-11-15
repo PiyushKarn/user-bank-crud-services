@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.project.first.userbankcrud.Domain.BankDomain;
+import com.project.first.userbankcrud.Domain.UserDomain;
 import com.project.first.userbankcrud.Services.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,8 +44,13 @@ public class BankController {
         return bankServices.deleteAccount(deleteAccountData);
     }
 
+//    @GetMapping("/pagination")    //findUserByPagination
+//    public List<BankDomain> getUserById(@RequestParam int offset, @RequestParam int limit) {
+//        return bankServices.findAccountsWithPagination(offset,limit);
+//    }
     @GetMapping("/pagination")    //findUserByPagination
-    public Page<BankDomain> getUserById(@RequestParam int offset, @RequestParam int limit) {
-        return bankServices.findAccountsWithPagination(offset,limit);
+    public List<BankDomain> getAccountById(@RequestParam int offset, @RequestParam int limit) {
+        Page<BankDomain> pages = bankServices.findAccountsWithPagination(offset,limit);
+        return pages.getContent();
     }
 }

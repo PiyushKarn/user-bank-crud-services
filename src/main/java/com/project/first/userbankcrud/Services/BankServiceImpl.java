@@ -1,6 +1,7 @@
 package com.project.first.userbankcrud.Services;
 
 import com.project.first.userbankcrud.Domain.BankDomain;
+import com.project.first.userbankcrud.Domain.UserDomain;
 import com.project.first.userbankcrud.Repositories.BankRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -71,13 +72,18 @@ public class BankServiceImpl implements BankService{
 
         try {
             Page<BankDomain> accounts = bankRepository.findAll(PageRequest.of(offset, limit));
+            System.out.println(accounts);
             return accounts;
         }
         catch (IllegalArgumentException e) {
             System.out.println("Please enter valid offset and limit");
+
         }
-        Page<BankDomain> accounts = bankRepository.findAll(PageRequest.of(0, 5));
-        return accounts;
+        Page<BankDomain> users = bankRepository.findAll(PageRequest.of(0, 5));
+        System.out.println("Passing default values to limit and offset");
+        return users;
     }
+
+
 }
 
